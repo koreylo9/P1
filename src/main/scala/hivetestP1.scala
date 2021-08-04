@@ -14,11 +14,11 @@ object hivetestP1 {
       .getOrCreate()
     println("created spark session")
     spark.sql("DROP table IF EXISTS BevA")
-    spark.sql("create table IF NOT EXISTS BevA(id Int,name String) row format delimited fields terminated by ','");
+    spark.sql("create table IF NOT EXISTS BevA(Beverage String,BranchID String) row format delimited fields terminated by ','");
     spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchA.txt' INTO TABLE BevA")
-    //spark.sql("SELECT * FROM BevA").show()
     spark.sql("SELECT Count(*) AS TOTALCOUNT FROM BevA").show()
-    spark.sql("SELECT Count(*) AS NumBranch2BevAFile FROM BevA WHERE BevA.name='Branch2'").show()
+    spark.sql("SELECT Count(*) AS NumBranch2BevAFile FROM BevA WHERE BevA.BranchID='Branch2'").show()
+    spark.sql("SELECT * FROM BevA").show()
   }
 }
 
