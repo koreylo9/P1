@@ -21,7 +21,7 @@ object hivetestP1 {
     spark.sql("SELECT Count(*) AS NumBranch2BevAFile FROM BevA WHERE BevA.BranchID='Branch2'").show()
     //spark.sql("SELECT * FROM BevA").show()
 
-    spark.sql("DROP table IF EXISTS BevB")
+    //spark.sql("DROP table IF EXISTS BevB")
     spark.sql("create table IF NOT EXISTS BevB(Beverage String,BranchID String) row format delimited fields terminated by ','");
     spark.sql("LOAD DATA LOCAL INPATH 'input/Bev_BranchB.txt' INTO TABLE BevB")
     //spark.sql("SELECT * FROM BevB").show()
@@ -59,7 +59,7 @@ object hivetestP1 {
 
     //Problem 1
     //What is the total number of consumers for Branch1?
-    //What is the number of consumers for the Branch2?
+    //What is the total number of consumers for the Branch2?
     println("Problem 1 What is the total number of consumers for Branch1? What is the number of consumers for the Branch2? ")
     spark.sql(sqlText="DROP TABLE IF EXISTS TotalCons");
     spark.sql(sqlText="CREATE TABLE IF NOT EXISTS TotalCons(BranchID STRING, TotalConsumers INT) row format delimited fields terminated by ','");
@@ -76,7 +76,11 @@ object hivetestP1 {
     //spark.sql(sqlText="SELECT BranchID, ROW_NUMBER() OVER (ORDER BY sum(ConsAll.Consumed)) AS row_num,sum(ConsAll.Consumed),BevAll.Beverage FROM BevAll join ConsAll On (ConsAll.Beverage=BevAll.Beverage) WHERE BranchID='Branch2' GROUP BY BevAll.BranchID,BevAll.Beverage ORDER BY sum(ConsAll.Consumed) DESC")
     println("Problem 2 What is the least consumed beverage on Branch2")
     spark.sql(sqlText="SELECT BranchID,sum(ConsAll.Consumed), BevAll.Beverage FROM BevAll join ConsAll On (ConsAll.Beverage=BevAll.Beverage) WHERE BranchID='Branch2' GROUP BY BevAll.BranchID,BevAll.Beverage ORDER BY sum(ConsAll.Consumed) DESC").show()
-    //median shop above is number 26 or Small Latter with 93184
+    println("least consumed")
+    spark.sql(sqlText="SELECT BranchID,sum(ConsAll.Consumed), BevAll.Beverage FROM BevAll join ConsAll On (ConsAll.Beverage=BevAll.Beverage) WHERE BranchID='Branch2' GROUP BY BevAll.BranchID,BevAll.Beverage ORDER BY sum(ConsAll.Consumed) ASC LIMIT 1").show()
+    //median shop above is number 26 or Small Latte with 93184
+    println("average (median) consumed")
+    spark.sql(sqlText="SELECT BranchID,sum(ConsAll.Consumed), BevAll.Beverage FROM BevAll join ConsAll On (ConsAll.Beverage=BevAll.Beverage) WHERE BranchID='Branch2' AND BevAll.Beverage='SMALL_LATTE' GROUP BY BevAll.BranchID,BevAll.Beverage  ORDER BY sum(ConsAll.Consumed) DESC").show()
 
     //Problem 3
     //What are the beverages available on Branch10, Branch8, and Branch1?
@@ -116,6 +120,7 @@ object hivetestP1 {
     //spark.sql(sqlText="SET hive.support.concurrency=true")
     //spark.sql(sqlText="SET hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager")
     //spark.sql(sqlText="ALTER TABLE Tab62 SET TBLPROPERTIES ('transactional'='true')")
+    //spark.sql(sqlText="Show tblproperties Tab62").show()
     //spark.sql(sqlText="DELETE FROM Tab62 WHERE Tab62.BranchID='Branch2' ")
 
 
